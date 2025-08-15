@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: flask-app
+    command: gunicorn TodoAPP.main:app --bind 0.0.0.0:80 --reload
+    ports:
+      - 80:80
+    volumes:
+      - .:/app

@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% block title %} Home {% endblock %} {% block
+content%}
+<div class="container-fluid px-4 py-5 mb-5 text-center">
+  <div class="lc-block d-block mx-auto mb-4">
+    <img
+      src="{{ url_for('static', filename='favicon.png') }}"
+      class="img-fluid"
+      alt="icon"
+    />
+  </div>
+
+  <div class="lc-block d-block mx-auto mb-4"></div>
+  <div class="lc-block mb-2">
+    <div editable="rich">
+      <header>
+        <h2 class="display-5 fw-bold">Organize Your Tasks Effortlessly</h2>
+        <a role="button" class="btn btn-success" href="/login">
+          Get Started
+        </a>
+      </header>
+    </div>
+  </div>
+  <div class="lc-block col-lg-6 mx-auto mb-4">
+    <div editable="rich">
+      <section class="features">
+        <div class="feature">
+          <h3>Quick Task Management</h3>
+          <p>Add and update tasks in seconds.</p>
+        </div>
+        <div class="feature">
+          <h3>Progress Tracking</h3>
+          <p>Mark tasks as complete and stay on top of your day.</p>
+        </div>
+        <div class="feature">
+          <h3>Simple & Lightweight</h3>
+          <p>Minimalist interface, works on any device.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="lc-block d-grid gap-2 d-sm-flex justify-content-sm-center">
+    <a
+      class="btn btn-primary btn-lg px-4 gap-6"
+      href="/login"
+      role="button"
+      style="margin-right: 10px"
+      >Login</a
+    >
+    <a class="btn btn-primary btn-lg px-4" href="/register" role="button"
+      >Sign Up</a
+    >
+  </div>
+</div>
+
+{% endblock %}

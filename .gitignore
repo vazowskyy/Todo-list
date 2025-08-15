@@ -1,0 +1,33 @@
+# ─── Python ─────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# ─── Virtualenv ─────────────────────────────────────────
+venv/
+env/
+.venv/
+
+# ─── SQLite Database ────────────────────────────────────
+*.sqlite
+*.sqlite3
+
+# ─── Flask Instance Folder ──────────────────────────────
+instance/
+
+# ─── VSCode / PyCharm ───────────────────────────────────
+.vscode/
+.idea/
+
+# ─── Docker ─────────────────────────────────────────────
+*.pid
+*.seed
+.env
+docker-compose.override.yml
+
+# ─── System Files ───────────────────────────────────────
+.DS_Store
+Thumbs.db
