@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, render_template, request, session, url_for, redirect
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user
 from .models import User
 from . import db
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -49,5 +49,7 @@ def register_post():
 
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return "<h1>Logout</h1>"
+    logout_user()
+    return redirect(url_for('views.home'))

@@ -2,6 +2,6 @@
 
 {% block content %}
 <h1 class="title">
-  Welcome, Anthony!
+  Welcome, {{ current_user.name.capitalize() }}!
 </h1>
 {% endblock %}
