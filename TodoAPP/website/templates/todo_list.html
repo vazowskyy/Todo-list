@@ -4,4 +4,21 @@
 <h1 class="title">
   Welcome, {{ current_user.name.capitalize() }}!
 </h1>
+
+<form method="POST" action="/todo_list">
+    <input type="text" id="name" name="name" placeholder="Name" required="true" autofocus>
+    <input type="text" id="content" name="content" placeholder="Text">
+    <button class="button is-block is-info is-large is-fullwidth">Add task</button>
+</form>
+
+{% for task in current_user.tasks %}
+  <div class="lc-block d-block mx-auto mb-4">
+    {{ task.name }}
+    <br />
+    {{ task.text }}
+    <br />
+    {{ task.date }}
+  </div>
+{% endfor %}
+
 {% endblock %}
