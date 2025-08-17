@@ -17,3 +17,4 @@ class Task(db.Model):
     text = db.Column(db.String(100), default="")
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    completed = db.Column(db.Boolean, default=False)

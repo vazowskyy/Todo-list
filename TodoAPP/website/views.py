@@ -24,3 +24,15 @@ def todo_list():
         return redirect(url_for('views.todo_list'))
 
     return render_template("todo_list.html")
+
+
+@views.route('/delete_task/<int:task_id>', methods=['POST'])
+@login_required
+def delete_task(task_id):
+    if request.method == 'POST':
+        task = Task.query.filter_by(
+            id=task_id, user=current_user.id).first()
+        if task:
+            db.session.delete(task)
+            db.session.commit()
+    return redirect(url_for('views.todo_list'))
