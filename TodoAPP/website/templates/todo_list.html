@@ -12,15 +12,21 @@
 </form>
 
 {% for task in current_user.tasks %}
-  <div class="lc-block d-block mx-auto mb-4 {% if task.completed %}text-decoration-line-through{% endif %}">
+  <div class="lc-block d-block mx-auto mb-4" style="{% if task.completed %}text-decoration:line-through{% endif %}">
     {{ task.name }}
     <br />
+
     {{ task.text }}
+
     <br />
     {{ task.date }}
-    <form action="{{ url_for('views.delete_task', task_id = task.id) }}" method=POST>
-      <button type="submit" name="close" id="close">&#10006</button>
+    <form action="{{ url_for('views.task_completed', task_id = task.id) }}" method=POST>
+      <button type="submit" name="update" id="update">{% if task.completed %} Not completed {% else %} Completed {% endif%}</button>
     </form>
+    <form action="{{ url_for('views.task_edit', task_id=task.id) }}"">
+      <button name="update_task" id="update_task" >Edit</button>
+    </form>
+  
   </div>
 {% endfor %}
 
