@@ -20,8 +20,9 @@
 
             <div class="field">
                 <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Your Password">
+                    <input class="input is-large" id="password" type="password" name="password" placeholder="Your Password">
                 </div>
+                <button id="toggle-password" type="button" aria-label="Show password as plain text. Warning: this will display your password on the screen.">Show password</button>
             </div>
             <div class="field">
                 <label class="checkbox">
@@ -33,4 +34,5 @@
         </form>
     </div>
 </div>
+<script src="{{ url_for('static', filename='showpassword.js')}}"></script>
 {% endblock %}

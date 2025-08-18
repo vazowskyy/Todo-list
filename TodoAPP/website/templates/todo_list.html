@@ -20,11 +20,15 @@
 
     <br />
     {{ task.date }}
+    
     <form action="{{ url_for('views.task_completed', task_id = task.id) }}" method=POST>
       <button type="submit" name="update" id="update">{% if task.completed %} Not completed {% else %} Completed {% endif%}</button>
     </form>
     <form action="{{ url_for('views.task_edit', task_id=task.id) }}"">
       <button name="update_task" id="update_task" >Edit</button>
+    </form>
+    <form action="{{ url_for('views.delete_task', task_id=task.id)}}" method="POST">
+      <button type="submit">&times;</button>  
     </form>
   
   </div>

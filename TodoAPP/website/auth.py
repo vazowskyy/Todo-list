@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user
 from .models import User
 from . import db
 from werkzeug.security import check_password_hash, generate_password_hash
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -32,14 +33,26 @@ def register():
 @auth.route('/register', methods=['POST'])
 def register_post():
     if request.method == 'POST':
-        name = request.form['name']
+        name = request.form['name'].lower().capitalize()
+        if len(name) < 2:
+            flash('Your name is below 2 characters :(')
+            return redirect(url_for('auth.register'))
         email = request.form['email']
-        password = request.form['password']
 
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('Email address already exists', 'error')
             return redirect(url_for('auth.register'))
+
+        password = request.form['password']
+
+        regex = re.compile('[@\\_!#$%^&*()<>?/|}{~:]')
+        if len(password) < 8:
+            flash('Password is below 8 characters ')
+            return redirect(url_for("auth.register"))
+        elif not regex.search(password):
+            flash('Password doesn\'t contain special characters ')
+            return redirect(url_for("auth.register"))
 
         new_user = User(email=email, name=name, password=generate_password_hash(
             password, method='pbkdf2:sha256'))
