@@ -4,16 +4,18 @@ from .models import User
 from . import db
 from werkzeug.security import check_password_hash, generate_password_hash
 import re
+from .forms import RegistrationForm, LoginForm
 
 auth = Blueprint('auth', __name__)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        remember = True if request.form.get('remember') else False
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        remember = True if form.remember_me.data else False
 
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):
@@ -22,43 +24,29 @@ def login():
 
         login_user(user=user, remember=remember)
         return redirect(url_for('views.todo_list'))
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
-@auth.route('/register', methods=['GET'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("signup.html")
-
-
-@auth.route('/register', methods=['POST'])
-def register_post():
-    if request.method == 'POST':
-        name = request.form['name'].lower().capitalize()
-        if len(name) < 2:
-            flash('Your name is below 2 characters :(')
-            return redirect(url_for('auth.register'))
-        email = request.form['email']
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        name = form.name.data.lower().capitalize()
+        email = form.email.data
 
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('Email address already exists', 'error')
             return redirect(url_for('auth.register'))
 
-        password = request.form['password']
-
-        regex = re.compile('[@\\_!#$%^&*()<>?/|}{~:]')
-        if len(password) < 8:
-            flash('Password is below 8 characters ')
-            return redirect(url_for("auth.register"))
-        elif not regex.search(password):
-            flash('Password doesn\'t contain special characters ')
-            return redirect(url_for("auth.register"))
+        password = form.password.data
 
         new_user = User(email=email, name=name, password=generate_password_hash(
             password, method='pbkdf2:sha256'))
         db.session.add(new_user)
         db.session.commit()
-    return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login'))
+    return render_template("signup.html", form=form)
 
 
 @auth.route('/logout')

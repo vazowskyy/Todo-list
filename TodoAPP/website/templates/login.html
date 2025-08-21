@@ -12,24 +12,13 @@
         {% endif %}
         {% endwith %}
         <form method="POST" action="/login">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
-            </div>
+            
+            {{ form.csrf_token }}
+            <p>{{ form.email.label }} {{ form.email() }}</p>
+            <p>{{ form.password.label }} {{ form.password() }}</p>
 
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" id="password" type="password" name="password" placeholder="Your Password">
-                </div>
-                <button id="toggle-password" type="button" aria-label="Show password as plain text. Warning: this will display your password on the screen.">Show password</button>
-            </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox" name="remember">
-                    Remember me
-                </label>
-            </div>
+            <button id="toggle-password" type="button" aria-label="Show password as plain text. Warning: this will display your password on the screen">Show password</button>
+            
             <button class="button is-block is-info is-large is-fullwidth">Login</button>
         </form>
     </div>
