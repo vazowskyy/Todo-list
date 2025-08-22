@@ -1,8 +1,9 @@
 python-dotenv
 FLASK
+flask_mailman
 flask-WTF
 flask_login
 Flask-SQLAlchemy
 Werkzeug
-PyJWT
+itsdangerous
 gunicorn
