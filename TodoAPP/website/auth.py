@@ -8,6 +8,7 @@ from .forms import RegistrationForm, LoginForm, ResetPasswordForm, FinalResetPas
 from .templates.security.reset_password_email_content import (
     reset_password_email_html_content)
 from flask_mailman import EmailMessage
+from . import DOMAIN_NAME
 
 auth = Blueprint('auth', __name__)
 
@@ -79,7 +80,7 @@ def forgot_password():
 
 
 def send_reset_password_email(user):
-    reset_password_url = url_for(
+    reset_password_url = DOMAIN_NAME + url_for(
         "auth.reset_password",
         token=user.generate_reset_password_token(),
         user_id=user.id

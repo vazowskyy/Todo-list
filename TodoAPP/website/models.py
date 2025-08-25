@@ -19,10 +19,10 @@ class User(db.Model, UserMixin):
         return serializer.dumps(self.email, salt=self.password)
 
     def set_password(self, password: str):
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     def check_password(self, password: str) -> bool:
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
 
     @staticmethod
     def validate_reset_password_token(token: str, user_id: int):

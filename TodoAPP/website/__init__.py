@@ -17,6 +17,7 @@ MAIL_SERVER = environ.get("MAIL_SERVER")
 MAIL_PORT = int(environ.get("MAIL_PORT") or 25)
 MAIL_USERNAME = environ.get("MAIL_USERNAME")
 MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
+DOMAIN_NAME = environ.get("DOMAIN_NAME")
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
