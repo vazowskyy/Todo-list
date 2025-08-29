@@ -2,14 +2,17 @@
 {% block content %}
 
     <form method="POST" action="{{ url_for('views.task_edit', task_id=task.id) }}">
-    <input type="text" id="name" name="name" placeholder="Name" autofocus value="{{ task.name }}">
-    <input type="text" id="content" name="content" placeholder="Text" value="{{ task.text }}">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}
+    {{ form.content.label }} {{ form.content() }}
+    {{ form.category.label }} {{ form.category() }}
+    {{ form.completed.label }} {{ form.completed() }}
     <br />
-    <label>Completed: </label>
-    <input type="checkbox" id="completed" name="completed" {% if task.completed %} checked {% endif %}/>
+    
+    
 
     <br />
     <button type="submit" class="button is-block is-info is-large is-fullwidth">Edit</button>
-
     <button class="button is-block is-info is-large is-fullwidth" href="{{ url_for('views.todo_list') }}">Cancel</button>
+
 {% endblock %}

@@ -6,12 +6,22 @@
 </h1>
 
 <form method="POST" action="/todo_list">
-    <input type="text" id="name" name="name" placeholder="Name" required="true" autofocus>
-    <input type="text" id="content" name="content" placeholder="Text">
-    <button class="button is-block is-info is-large is-fullwidth">Add task</button>
+  {{ search.hidden_tag() }}
+  {{ search.category.label }} {{ search.category() }}
+  {{ search.submit() }}
 </form>
 
-{% for task in current_user.tasks %}
+
+<form method="POST" action="/todo_list">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}
+    {{ form.content.label }} {{ form.content() }}
+    {{ form.category.label }} {{ form.category() }}
+    <button class="button is-block is-info is-large is-fullwidth">Add task</button>
+
+</form>
+{% if tasks %}
+{% for task in tasks %}
   <div class="lc-block d-block mx-auto mb-4" style="{% if task.completed %}text-decoration:line-through{% endif %}">
     {{ task.name }}
     <br />
@@ -20,18 +30,26 @@
 
     <br />
     {{ task.date }}
-    
+
+    <br />
+    {{ task.category }}
     <form action="{{ url_for('views.task_completed', task_id = task.id) }}" method=POST>
+      {{ form.hidden_tag() }}
       <button type="submit" name="update" id="update">{% if task.completed %} Not completed {% else %} Completed {% endif%}</button>
     </form>
     <form action="{{ url_for('views.task_edit', task_id=task.id) }}"">
+      {{ form.hidden_tag() }}
       <button name="update_task" id="update_task" >Edit</button>
     </form>
     <form action="{{ url_for('views.delete_task', task_id=task.id)}}" method="POST">
+      {{ form.hidden_tag() }}
       <button type="submit">&times;</button>  
     </form>
   
   </div>
 {% endfor %}
+{% else %}
+<Label>No tasks</Label>
+{% endif %}
 
 {% endblock %}

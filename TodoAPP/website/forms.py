@@ -31,3 +31,21 @@ class FinalResetPasswordForm(FlaskForm):
     password2 = PasswordField("Repeat Password", validators=[
                               InputRequired(), EqualTo('password')])
     submit = SubmitField("Confirm Password Reset")
+
+
+class TaskAddForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired()])
+    content = StringField("Content")
+    category = StringField("Category")
+
+
+class TaskEditForm(FlaskForm):
+    name = StringField("Name", validators=[InputRequired()])
+    content = StringField("Content")
+    category = StringField("Category")
+    completed = BooleanField("Completed?")
+
+
+class TaskCategorySearch(FlaskForm):
+    category = StringField("Filter by category: ")
+    submit = SubmitField("Search")
