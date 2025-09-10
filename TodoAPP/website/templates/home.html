@@ -1,56 +1,89 @@
 {% extends "base.html" %} {% block title %} Home {% endblock %} {% block
 content%}
-<div class="container-fluid px-4 py-5 mb-5 text-center">
-  <div class="lc-block d-block mx-auto mb-4">
-    <img
-      src="{{ url_for('static', filename='favicon.png') }}"
-      class="img-fluid"
-      alt="icon"
-    />
-  </div>
 
-  <div class="lc-block d-block mx-auto mb-4"></div>
-  <div class="lc-block mb-2">
-    <div editable="rich">
-      <header>
-        <h2 class="display-5 fw-bold">Organize Your Tasks Effortlessly</h2>
-        <a role="button" class="btn btn-success" href="/login">
-          Get Started
-        </a>
-      </header>
-    </div>
-  </div>
-  <div class="lc-block col-lg-6 mx-auto mb-4">
-    <div editable="rich">
-      <section class="features">
-        <div class="feature">
-          <h3>Quick Task Management</h3>
-          <p>Add and update tasks in seconds.</p>
-        </div>
-        <div class="feature">
-          <h3>Progress Tracking</h3>
-          <p>Mark tasks as complete and stay on top of your day.</p>
-        </div>
-        <div class="feature">
-          <h3>Simple & Lightweight</h3>
-          <p>Minimalist interface, works on any device.</p>
-        </div>
-      </section>
+<section
+  class="h-screen bg-center bg-no-repeat bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/conference.jpg')] bg-gray-700 bg-blend-multiply">
+  <div class="px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-26">
+    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">Organize
+      Your Tasks Effortlessly</h1>
+    <p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">Quick Task Management
+      <br>Add and update tasks in seconds.
+      <br>Progress Tracking
+      <br>Mark tasks as complete and stay on top of your day.
+      <br>Simple & Lightweight
+      <br>Minimalist interface, works on any device.
+    </p>
+    <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+      <a href="/register"
+        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+        Get started
+        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9" />
+        </svg>
+      </a>
+      
+      <a href="/login"
+        class="ms-2 inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-green-800 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+        Login
+        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"></path>
+        </svg>
+      </a>
+
     </div>
   </div>
 
-  <div class="lc-block d-grid gap-2 d-sm-flex justify-content-sm-center">
-    <a
-      class="btn btn-primary btn-lg px-4 gap-6"
-      href="/login"
-      role="button"
-      style="margin-right: 10px"
-      >Login</a
-    >
-    <a class="btn btn-primary btn-lg px-4" href="/register" role="button"
-      >Sign Up</a
-    >
+  <!-- Carousel container (większy i wyśrodkowany) -->
+<div id="default-carousel" class="relative w-full max-w-4xl mx-auto" data-carousel="slide">
+  <!-- Carousel wrapper -->
+  <div class="relative h-72 md:h-[500px] overflow-hidden rounded-2xl shadow-lg">
+    <!-- Item 1 -->
+    <div class="hidden duration-700 ease-in-out" data-carousel-item>
+      <img src="/static/images/carousel/example.png"
+           class="absolute block w-full h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+           alt="...">
+    </div>
+    <!-- Item 2 -->
+    <div class="hidden duration-700 ease-in-out" data-carousel-item>
+      <img src="/static/images/carousel/example.png"
+           class="absolute block w-full h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+           alt="...">
+    </div>
+    <!-- ... kolejne itemy ... -->
   </div>
+
+  <!-- Indicators -->
+  <div class="absolute z-30 flex -translate-x-1/2 bottom-4 left-1/2 space-x-3">
+    <button type="button" class="w-3 h-3 rounded-full bg-white" data-carousel-slide-to="0"></button>
+    <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="1"></button>
+    <button type="button" class="w-3 h-3 rounded-full bg-white/50" data-carousel-slide-to="2"></button>
+  </div>
+
+  <!-- Controls -->
+  <button type="button"
+          class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          data-carousel-prev>
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-black/30 group-hover:bg-black/50">
+      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5 1 1 5l4 4"/>
+      </svg>
+    </span>
+  </button>
+  <button type="button"
+          class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          data-carousel-next>
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-black/30 group-hover:bg-black/50">
+      <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="m1 9 4-4-4-4"/>
+      </svg>
+    </span>
+  </button>
 </div>
+
+</section>
 
 {% endblock %}
