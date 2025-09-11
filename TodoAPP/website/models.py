@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
 
     @staticmethod
     def validate_reset_password_token(token: str, user_id: int):
-        user = db.session. get(User, user_id)
+        user = db.session.get(User, user_id)
 
         if user is None:
             return None
@@ -46,6 +46,12 @@ class User(db.Model, UserMixin):
             return None
 
         return user
+
+    def tasks_completed(self):
+        total = len(self.tasks)
+        completed = len(
+            [task for task in self.tasks if task.completed == True])
+        return completed, total
 
 
 class Task(db.Model):

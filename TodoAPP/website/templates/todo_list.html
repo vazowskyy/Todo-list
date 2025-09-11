@@ -1,55 +1,100 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Welcome, {{ current_user.name.capitalize() }}!
-</h1>
+<div class="max-w-3xl mx-auto p-6">
+  <h1 class="mb-4 text-3xl font-extrabold text-white dark:text-white md:text-5xl lg:text-6xl">Welcome, <span
+      class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">{{
+      current_user.name.capitalize() }}</span>
+    <br />Tasks completed: {{ current_user.tasks_completed()[0] }} / {{ current_user.tasks_completed()[1] }}
+  </h1>
 
-<form method="POST" action="/todo_list">
-  {{ search.hidden_tag() }}
-  {{ search.category.label }} {{ search.category() }}
-  {{ search.submit() }}
-</form>
+  <!-- Search Form -->
+  <form method="POST" action="/todo_list"
+    class="border border-white bg-gradient-to-r to-emerald-600 from-gray-400 mb-6 rounded-lg shadow p-4">
+    {{ search.hidden_tag() }}
+    <label class="block mb-2 text-sm font-medium text-white">
+          {{ search.category.label }}
+      </label>
+    <div class="flex flex-col sm:flex-row gap-4 items-center">
+      
+      <div class="flex-1">
+        
+        {{ search.category(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500") }}
+      </div>
+      <div>
+        {{ search.submit(class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none
+        focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5") }}
+      </div>
+    </div>
+  </form>
 
-
-<form method="POST" action="/todo_list">
+  <!-- Add Task Form -->
+  <form method="POST" action="/todo_list"
+    class="border border-white bg-gradient-to-r to-emerald-600 from-gray-400 rounded-lg shadow p-6 mb-8">
     {{ form.hidden_tag() }}
-    {{ form.name.label }} {{ form.name() }}
-    {{ form.content.label }} {{ form.content() }}
-    {{ form.category.label }} {{ form.category() }}
-    <button class="button is-block is-info is-large is-fullwidth">Add task</button>
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium text-white">{{ form.name.label }}</label>
+      {{ form.name(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500") }}
+    </div>
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium text-white">{{ form.content.label }}</label>
+      {{ form.content(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500") }}
+    </div>
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium text-white">{{ form.category.label }}</label>
+      {{ form.category(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500") }}
+    </div>
+    <button type="submit"
+      class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center">
+      Add task
+    </button>
+  </form>
 
-</form>
-{% if tasks %}
-{% for task in tasks %}
-  <div class="lc-block d-block mx-auto mb-4" style="{% if task.completed %}text-decoration:line-through{% endif %}">
-    {{ task.name }}
-    <br />
+  <!-- Tasks List -->
+  {% if tasks %}
+  <div class="space-y-4">
+    {% for task in tasks %}
+    <div
+      class="p-5 bg-gradient-to-r to-emerald-600 from-gray-400 rounded-lg shadow border border-white {% if task.completed %}opacity-60 line-through{% endif %}">
+      <h2 class="text-xl font-semibold text-white">{{ task.name.capitalize() }}</h2>
+      <p class="text-white mt-1">{{ task.text }}</p>
+      <p class="text-sm text-white mt-2">📅 {{ task.date }}</p>
+      <p class="text-sm text-white mt-1">🏷️ {{ task.category }}</p>
 
-    {{ task.text }}
+      <div class="flex flex-wrap gap-2 mt-4">
+        <!-- Toggle completed -->
+        <form action="{{ url_for('views.task_completed', task_id=task.id) }}" method="POST">
+          {{ form.hidden_tag() }}
+          <button type="submit"
+            class="px-3 py-1.5 text-sm font-medium text-white rounded-lg {% if task.completed %} bg-yellow-500 hover:bg-yellow-600 {% else %} bg-green-600 hover:bg-green-700 {% endif %}">
+            {% if task.completed %} Not completed {% else %} Completed {% endif %}
+          </button>
+        </form>
 
-    <br />
-    {{ task.date }}
+        <!-- Edit task -->
+        <form action="{{ url_for('views.task_edit', task_id=task.id) }}">
+          {{ form.hidden_tag() }}
+          <button
+            class="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+            Edit
+          </button>
+        </form>
 
-    <br />
-    {{ task.category }}
-    <form action="{{ url_for('views.task_completed', task_id = task.id) }}" method=POST>
-      {{ form.hidden_tag() }}
-      <button type="submit" name="update" id="update">{% if task.completed %} Not completed {% else %} Completed {% endif%}</button>
-    </form>
-    <form action="{{ url_for('views.task_edit', task_id=task.id) }}"">
-      {{ form.hidden_tag() }}
-      <button name="update_task" id="update_task" >Edit</button>
-    </form>
-    <form action="{{ url_for('views.delete_task', task_id=task.id)}}" method="POST">
-      {{ form.hidden_tag() }}
-      <button type="submit">&times;</button>  
-    </form>
-  
+        <!-- Delete task -->
+        <form action="{{ url_for('views.delete_task', task_id=task.id) }}" method="POST">
+          {{ form.hidden_tag() }}
+          <button type="submit"
+            class="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
+            &times;
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
   </div>
-{% endfor %}
-{% else %}
-<Label>No tasks</Label>
-{% endif %}
-
+  {% else %}
+  <p class="text-gray-500 mt-6 text-center">No tasks</p>
+  {% endif %}
+</div>
+</section>
 {% endblock %}

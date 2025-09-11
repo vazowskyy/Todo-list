@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="h-screen bg-cover bg-center" style="background-image: url('/static/background.svg')">
-    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-26">
+<section style="background-image: url('/static/background.svg')" class="bg-cover bg-no-repeat h-screen bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-md bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700">
         {% with errors = get_flashed_messages(category_filter=["error"]) %}
         {% if errors %}
         <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
@@ -13,9 +13,8 @@
         </div>
         {% endif %}
         {% endwith %}
-        <div
-            class="w-1/2 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <!-- <div class="w-1/2 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"> -->
+            <div class="p-6 space-y-4 sm:p-8">
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                     Sign in to your account
                 </h1>

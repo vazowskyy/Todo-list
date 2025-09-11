@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <form method="POST" action="{{ url_for('views.task_edit', task_id=task.id) }}">
+<form method="POST" action="{{ url_for('views.task_edit', task_id=task.id) }}"
+    class="border border-white bg-gradient-to-r to-emerald-600 from-gray-400 rounded-lg shadow p-6 mb-8">
     {{ form.hidden_tag() }}
-    {{ form.name.label }} {{ form.name() }}
-    {{ form.content.label }} {{ form.content() }}
-    {{ form.category.label }} {{ form.category() }}
-    {{ form.completed.label }} {{ form.completed() }}
-    <br />
-    
-    
-
-    <br />
-    <button type="submit" class="button is-block is-info is-large is-fullwidth">Edit</button>
-    <button class="button is-block is-info is-large is-fullwidth" href="{{ url_for('views.todo_list') }}">Cancel</button>
-
+    <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-white">{{ form.name.label }}</label>
+        {{ form.name(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500", value=task.name)}}
+    </div>
+    <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-white">{{ form.content.label }}</label>
+        {{ form.content(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500", value=task.text) }}
+    </div>
+    <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-white">{{ form.category.label }}</label>
+        {{ form.category(class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500", value=task.category) }}
+    </div>
+    <button type="submit"
+        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center mb-3">
+        Edit task
+    </button>
+    <button
+        class="w-full text-white bg-yellow-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center"
+        href="{{ url_for('views.todo_list') }}">Cancel</button>
+</form>
 {% endblock %}
