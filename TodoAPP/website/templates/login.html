@@ -1,28 +1,94 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    <div class="box">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}
-            </div>
+<section class="h-screen bg-cover bg-center" style="background-image: url('/static/background.svg')">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-26">
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <ul>
+            {% for msg in errors %}
+            <li>{{ msg }}</li>
+            {% endfor -%}
+        </ul>
+        </div>
         {% endif %}
         {% endwith %}
-        <form method="POST" action="/login">
-            
-            {{ form.csrf_token }}
-            <p>{{ form.email.label }} {{ form.email() }}</p>
-            <p>{{ form.password.label }} {{ form.password() }}</p>
+        <div
+            class="w-1/2 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    Sign in to your account
+                </h1>
+                <form class="space-y-4 md:space-y-6" method="POST" action="/login">
+                    {{ form.csrf_token }}
 
-            <button id="toggle-password" type="button" aria-label="Show password as plain text. Warning: this will display your password on the screen">Show password</button>
-            
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
-        </form>
+                    <!-- Email -->
+                    <div>
+                        <label for="{{ form.email.id }}"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                        {{ form.email(
+                        class='bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600
+                        focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
+                        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                        placeholder='name@company.com',
+                        required=True
+                        ) }}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative">
+                        <label for="{{ form.password.id }}"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                        <div class="flex">
+
+                            {{ form.password(
+                            class='bg-gray-50 rounded-none rounded-l-lg border-gray-300 text-gray-900 rounded-lg
+                            focus:ring-primary-600
+                            focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600
+                            dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500
+                            dark:focus:border-blue-500',
+                            placeholder='Your password',
+                            required=True
+                            ) }}
+                            <span
+                                class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <button id="toggle-password" type="button" aria-label="Show/hide password">
+                                    Show
+                                </button>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                {{ form.remember_me(class='w-4 h-4 border border-gray-300 rounded bg-gray-50
+                                focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600
+                                dark:focus:ring-primary-600 dark:ring-offset-gray-800') }}
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
+                            </div>
+                        </div>
+                        <a href="/forgot"
+                            class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500 dark:text-gray-300">Forgot
+                            password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign
+                        in</button>
+                    <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                        Don’t have an account yet? <a href="/register"
+                            class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
     </div>
-    <a href="/forgot">Forgot password?</a>
-</div>
-<script src="{{ url_for('static', filename='showpassword.js')}}"></script>
+</section>
+<script src="/static/showpassword.js"></script>
 {% endblock %}
