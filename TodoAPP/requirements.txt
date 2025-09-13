@@ -2,6 +2,7 @@ python-dotenv
 FLASK
 flask_mailman
 flask-WTF
+email-validator
 flask_login
 Flask-SQLAlchemy
 Werkzeug

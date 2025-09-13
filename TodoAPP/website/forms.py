@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, validators, EmailField, SubmitField
-from wtforms.validators import InputRequired, EqualTo, Length
+from wtforms.validators import InputRequired, EqualTo, Length, Email
 
 
 class RegistrationForm(FlaskForm):
@@ -14,14 +14,16 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField("Email", validators=[InputRequired()])
+    email = StringField("Email", validators=[InputRequired(), Email(
+        "This field requires a valid email address")])
     password = PasswordField("Password", validators=[
                              InputRequired()], id="password")
     remember_me = BooleanField("Remember me")
 
 
 class ResetPasswordForm(FlaskForm):
-    email = StringField("Email", validators=[InputRequired()])
+    email = EmailField("Email", validators=[InputRequired(), Email(
+        "This field requires a valid email address")])
     submit = SubmitField("Request Password Reset")
 
 
