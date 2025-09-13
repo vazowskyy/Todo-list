@@ -26,8 +26,11 @@ instance/
 *.pid
 *.seed
 .env
+postgres/data/
+TodoAPP/postgres/data
 docker-compose.override.yml
 
 # ─── System Files ───────────────────────────────────────
 .DS_Store
 Thumbs.db
+

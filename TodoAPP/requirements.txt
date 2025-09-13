@@ -8,3 +8,5 @@ Flask-SQLAlchemy
 Werkzeug
 itsdangerous
 gunicorn
+psycopg2-binary
+Flask-Migrate 

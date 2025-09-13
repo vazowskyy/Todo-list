@@ -6,6 +6,7 @@ from os import environ, path
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect
 from flask_mailman import Mail
+from flask_migrate import Migrate
 
 # load enviroment variables
 load_dotenv()
@@ -22,13 +23,14 @@ DOMAIN_NAME = environ.get("DOMAIN_NAME")
 db = SQLAlchemy()
 csrf = CSRFProtect()
 mail = Mail()
+migrate = Migrate()
 
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = environ.get("SECRET_KEY")
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{environ.get('POSTGRES_USER')}:{environ.get('POSTGRES_PASSWORD')}@db:5432/{environ.get('POSTGRES_DB')}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['MAIL_SERVER'] = MAIL_SERVER
     app.config['MAIL_PORT'] = MAIL_PORT
@@ -40,6 +42,7 @@ def create_app():
 
     csrf.init_app(app)
     db.init_app(app)
+    migrate.init_app(app, db)
     mail.init_app(app)
     from .views import views
     app.register_blueprint(views, url_prefix='/')
