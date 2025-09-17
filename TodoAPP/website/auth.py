@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, session, url_for, redirect, render_template_string
+from flask import current_app, Blueprint, flash, render_template, request, session, url_for, redirect, render_template_string
 from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
 from . import db
@@ -9,6 +9,7 @@ from .templates.security.reset_password_email_content import (
     reset_password_email_html_content)
 from flask_mailman import EmailMessage
 from . import DOMAIN_NAME
+
 
 auth = Blueprint('auth', __name__)
 

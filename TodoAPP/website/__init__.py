@@ -7,66 +7,94 @@ from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect
 from flask_mailman import Mail
 from flask_migrate import Migrate
+from .config import DevelopmentConfig, ProductionConfig
+import sqlalchemy as sa
+from flask.logging import default_handler
+from logging.handlers import RotatingFileHandler
+import logging
 
 # load enviroment variables
 load_dotenv()
-
-DB_NAME = environ.get("DB_NAME")
-RESET_PASS_TOKEN_MAX_AGE = int(environ.get(
-    "RESET_PASS_TOKEN_MAX_AGE") or (15 * 60))
-MAIL_SERVER = environ.get("MAIL_SERVER")
-MAIL_PORT = int(environ.get("MAIL_PORT") or 25)
-MAIL_USERNAME = environ.get("MAIL_USERNAME")
-MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
-DOMAIN_NAME = environ.get("DOMAIN_NAME")
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
 mail = Mail()
 migrate = Migrate()
+login_manager = LoginManager()
+
+DOMAIN_NAME = environ.get("DOMAIN_NAME")
 
 
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = environ.get("SECRET_KEY")
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{environ.get('POSTGRES_USER')}:{environ.get('POSTGRES_PASSWORD')}@db:5432/{environ.get('POSTGRES_DB')}"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['MAIL_SERVER'] = MAIL_SERVER
-    app.config['MAIL_PORT'] = MAIL_PORT
-    app.config['MAIL_USE_SSL'] = True if MAIL_PORT == 465 else False
-    app.config['MAIL_USERNAME'] = MAIL_USERNAME
-    app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
-    app.config['MAIL_DEFAULT_SENDER'] = MAIL_USERNAME
-    app.config['RESET_PASS_TOKEN_MAX_AGE'] = RESET_PASS_TOKEN_MAX_AGE
+    if environ.get("FLASK_ENV") == "production":
+        config_class = ProductionConfig
+    else:
+        config_class = DevelopmentConfig
 
+    app.config.from_object(config_class)
+
+    initialize_extensions(app)
+    register_blueprint(app)
+    # configure_logging(app)
+
+    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    inspector = sa.inspect(engine)
+    if not inspector.has_table("user"):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            app.logger.info('Initialized the database!')
+    else:
+        app.logger.info('Database already contains the user table.')
+
+    return app
+
+
+def initialize_extensions(app):
+    # Since the application instance is created, bind each extension instance to Flask app
     csrf.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
+
+    # Flask Login
+    from .models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+
+
+def register_blueprint(app):
+    # Since flask app instance is created, register blueprints to Flask app
     from .views import views
     app.register_blueprint(views, url_prefix='/')
 
     from .auth import auth
     app.register_blueprint(auth, url_prefix='/')
 
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
 
-    from .models import User
+# def configure_logging(app):
+#     # Logging Configuration
+#     if app.config['LOG_WITH_GUNICORN']:
+#         gunicorn_error_logger = logging.getLogger('gunicorn.error')
+#         app.logger.handlers.extend(gunicorn_error_logger.handlers)
+#         app.logger.setLevel(logging.DEBUG)
+#     else:
+#         file_handler = RotatingFileHandler('instance/flask-user-management.log',
+#                                            maxBytes=16384,
+#                                            backupCount=20)
+#         file_formatter = logging.Formatter(
+#             '%(asctime)s %(levelname)s %(threadName)s-%(thread)d: %(message)s [in %(filename)s:%(lineno)d]')
+#         file_handler.setFormatter(file_formatter)
+#         file_handler.setLevel(logging.INFO)
+#         app.logger.addHandler(file_handler)
 
-    with app.app_context():
-        db.create_all()
+#     # Remove the default logger configured by Flask
+#     app.logger.removeHandler(default_handler)
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
-
-    return app
-
-
-def create_database(app):
-    if not path.exists('website/' + DB_NAME):
-        db.create_all(app=app)
-        print('Created Database!')
+#     app.logger.info('Starting the Flask User Management App...')
