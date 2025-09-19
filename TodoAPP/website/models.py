@@ -62,3 +62,5 @@ class Task(db.Model):
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
     completed = db.Column(db.Boolean, default=False)
     category = db.Column(db.String(100), default="")
+
+    

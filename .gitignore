@@ -34,3 +34,5 @@ docker-compose.override.yml
 .DS_Store
 Thumbs.db
 
+# ─── Pytest ───────────────────────────────────────
+.pytest_cache

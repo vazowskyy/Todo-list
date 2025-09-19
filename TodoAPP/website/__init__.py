@@ -2,12 +2,12 @@ from flask import Flask
 from flask_login import LoginManager, user_logged_in
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 from os import environ, path
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect
 from flask_mailman import Mail
 from flask_migrate import Migrate
-from .config import DevelopmentConfig, ProductionConfig
 import sqlalchemy as sa
 from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
@@ -29,12 +29,14 @@ def create_app():
     app = Flask(__name__)
 
     if environ.get("FLASK_ENV") == "production":
-        config_class = ProductionConfig
+        config_class = os.getenv(
+            'CONFIG_TYPE', default='TodoAPP.config.ProductionConfig')
     else:
-        config_class = DevelopmentConfig
+        config_class = os.getenv(
+            'CONFIG_TYPE', default='TodoAPP.config.DevelopmentConfig')
 
     app.config.from_object(config_class)
-
+    app.logger.info(f"Currently using {app.config['SQLALCHEMY_DATABASE_URI']}")
     initialize_extensions(app)
     register_blueprint(app)
     # configure_logging(app)

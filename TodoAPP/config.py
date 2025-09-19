@@ -4,10 +4,12 @@ from dotenv import load_dotenv
 import logging
 from logging.handlers import RotatingFileHandler
 
-load_dotenv()
 
 # Determine the folder of the top-level directory of this project
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv()
+# print(environ.get('DATABASE_URL'))
+# print(os.path.join(BASEDIR, "/website", "/.env"))
 
 
 class Config(object):
@@ -15,7 +17,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.getenv('SECRET_KEY', default='BAD_SECRET_KEY')
-
+    print(os.getenv('DATABASE_URL'))
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     else:
@@ -50,6 +52,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
-                                        default=f"sqlite:///{os.path.join(BASEDIR, '../../instance', 'test.db')}")
+    # SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
+    #                                    default=f"sqlite:///{os.path.join(BASEDIR, '../../instance', 'test.db')}")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False

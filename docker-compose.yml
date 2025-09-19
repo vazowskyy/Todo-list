@@ -30,4 +30,6 @@ services:
       - 80:80
     volumes:
       - .:/app
+    # environment:
+    #   - DATABASE_URL=
   
