@@ -29,7 +29,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - .:/app
+      - ./TodoAPP:/app/TodoAPP
     # environment:
     #   - DATABASE_URL=
   
