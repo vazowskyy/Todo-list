@@ -39,11 +39,10 @@ def test_register_user(test_client):
         'email': 'alice@example.com',
         'name': 'alice',
         'password': 'foo1234!',
-        'password2': 'foo1234!',
+        'confirm': 'foo1234!',
     }, follow_redirects=True)
     assert response.status_code == 200
     assert b'Login' in response.data
-    print(response.get_data(as_text=True))
 
     # login
     response = test_client.post('/login', data={
@@ -52,6 +51,4 @@ def test_register_user(test_client):
     }, follow_redirects=True)
     assert response.status_code == 200
     html = response.get_data(as_text=True)
-    print(response.request.path)
-    print(html[:500])
     assert 'welcome' in html.lower()
