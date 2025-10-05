@@ -21,17 +21,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml up -d --build
 
-      - name: Wait for database
-        run: |
-          for i in {1..10}; do
-            if docker exec $(docker ps -qf "name=db") pg_isready -U $POSTGRES_USER; then
-              echo "Postgres is ready!"
-              break
-            fi
-            echo "Waiting for Postgres..."
-            sleep 3
-          done
-
       - name: Run tests
         run: docker exec $(docker ps -qf "name=flask-app") pytest -v -s ./TodoAPP/tests
 

@@ -1,4 +1,7 @@
 services:
+  base:
+    env_file:
+      - .env_sample
   db:
     image: postgres:16
     restart: always 
