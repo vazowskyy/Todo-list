@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Write .env.ci file
         run: |
-          cat <<EOF > ./.ci/.env.ci
+          cat <<EOF > .ci/.env.ci
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
@@ -43,7 +43,7 @@ jobs:
 
       - name: Build and start services
         run: |
-          docker compose -f ./.ci/docker-compose.yml up -d --build
+          docker compose -f .ci/docker-compose.yml up -d --build
 
       - name: Run tests
         run: docker exec flask-app pytest -v -s ./TodoAPP/tests
