@@ -38,6 +38,8 @@ jobs:
             MAIL_USERNAME=${{ env.MAIL_USERNAME }}
             MAIL_PASSWORD=${{ env.MAIL_PASSWORD }}
             DOMAIN_NAME=${{ env.DOMAIN_NAME }}
+      - name: Show docker compose logs
+        run: docker compose logs
 
       - name: Execute tests Flask APP
         run: |
