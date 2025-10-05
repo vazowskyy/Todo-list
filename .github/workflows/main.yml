@@ -6,20 +6,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env: 
-      DATABASE_URL = ${{ secrets.DATABASE_URL }}
-      DB_NAME = ${{ secrets.DB_NAME }}
-      DOMAIN_NAME = ${{ secrets.DOMAIN_NAME }}
-      FLASK_ENV = ${{ secrets.FLASK_ENV }}
-      MAIL_PASSWORD = ${{ secrets.MAIL_PASSWORD }}
-      MAIL_PORT = ${{ secrets.MAIL_PORT }}
-      MAIL_SERVER = ${{ secrets.MAIL_SERVER }}
-      MAIL_USERNAME = ${{ secrets.MAIL_USERNAME }}
-      MAIL_USE_SSL = ${{ secrets.MAIL_USE_SSL }}
-      POSTGRES_DB = ${{ secrets.POSTGRES_DB }}
-      POSTGRES_PASSWORD = ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_USER = ${{ secrets.POSTGRES_USER }}
-      SECRET_KEY = ${{ secrets.SECRET_KEY }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+      FLASK_ENV: ${{ secrets.FLASK_ENV }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+      MAIL_PORT: ${{ secrets.MAIL_PORT }}
+      MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_USE_SSL: ${{ secrets.MAIL_USE_SSL }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
       - name: Checkout repository
