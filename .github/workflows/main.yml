@@ -22,6 +22,9 @@ jobs:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Write .env.ci file
         run: |
           cat <<EOF > .ci/.env.ci
@@ -38,8 +41,6 @@ jobs:
           MAIL_USE_SSL=${{ secrets.MAIL_USE_SSL }}
           DOMAIN_NAME=${{ secrets.DOMAIN_NAME }}
           EOF
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Build and start services
         run: |
