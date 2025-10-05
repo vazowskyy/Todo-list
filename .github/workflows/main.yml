@@ -6,7 +6,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env: DATABASE_URL = ${{ secrets.DATABASE_URL }}
+    env: 
+      DATABASE_URL = ${{ secrets.DATABASE_URL }}
       DB_NAME = ${{ secrets.DB_NAME }}
       DOMAIN_NAME = ${{ secrets.DOMAIN_NAME }}
       FLASK_ENV = ${{ secrets.FLASK_ENV }}
