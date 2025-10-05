@@ -59,4 +59,4 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Run tests
-        run: docker exec $(docker ps -qf "name=flask-app") pytest -v -s ./TodoAPP/tests
+        run: docker exec flask-app pytest -v -s ./TodoAPP/tests
