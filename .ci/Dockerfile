@@ -2,10 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY ./TodoAPP/requirements.txt ./
+COPY ../TodoAPP/requirements.txt ./TodoAPP/requirements.txt
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r ./TodoAPP/requirements.txt
 
-COPY ../TodoAPP/ ./app
+COPY ../TodoAPP/ ./TodoAPP/
 
-CMD CMD ["gunicorn", "TodoAPP.main:app", "--bind", "0.0.0.0:80", "--reload"]
+CMD ["gunicorn", "TodoAPP.main:app", "--bind", "0.0.0.0:80", "--reload"]
