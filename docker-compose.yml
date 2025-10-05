@@ -1,8 +1,6 @@
 services:
 
   db:
-    env_file:
-      - .env_sample
     image: postgres:16
     restart: always 
     environment:
