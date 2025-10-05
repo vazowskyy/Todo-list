@@ -19,8 +19,6 @@ services:
       start_period: 10s
 
   app:
-    env_file:
-      - .env_sample
     depends_on:
       db:
         condition: service_healthy
