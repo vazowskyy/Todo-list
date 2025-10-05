@@ -1,8 +1,8 @@
 services:
-  base:
+
+  db:
     env_file:
       - .env_sample
-  db:
     image: postgres:16
     restart: always 
     environment:
@@ -21,6 +21,8 @@ services:
       start_period: 10s
 
   app:
+    env_file:
+      - .env_sample
     depends_on:
       db:
         condition: service_healthy
