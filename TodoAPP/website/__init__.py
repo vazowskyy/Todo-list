@@ -14,7 +14,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 
 # load enviroment variables
-load_dotenv(".env_sample")
+load_dotenv()
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
