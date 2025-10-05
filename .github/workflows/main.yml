@@ -49,9 +49,6 @@ jobs:
         if: failure()
         run: docker compose logs
 
-      - name: Stop containers
-        if: always()
-        run: docker compose down
   Testing:
     runs-on: ubuntu-latest
     needs: Build
