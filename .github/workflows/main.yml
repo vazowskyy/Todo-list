@@ -58,5 +58,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Check containers
+        run: docker ps -a
       - name: Run tests
         run: docker exec flask-app pytest -v -s ./TodoAPP/tests
