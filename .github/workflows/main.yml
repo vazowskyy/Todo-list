@@ -1,46 +1,44 @@
-name: Docker-Compose Action
+name: CI Tests with Docker Compose
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     env:
-      FLASK_ENV: ${{ secrets.FLASK_ENV }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
-      MAIL_PORT: ${{ secrets.MAIL_PORT }}
-      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-      DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+      FLASK_ENV: testing
+      CONFIG_TYPE: config.TestingConfig
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.4.0
-        with:
-          compose-file: "./docker-compose.yml"
-          env: |
-            FLASK_ENV =  ${{ env.FLASK_ENV }}
-            POSTGRES_DB=${{ env.POSTGRES_DB }}
-            POSTGRES_USER=${{ env.POSTGRES_USER }}
-            POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }}
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            SECRET_KEY=${{ env.SECRET_KEY }}
-            MAIL_SERVER=${{ env.MAIL_SERVER }}
-            MAIL_PORT=${{ env.MAIL_PORT }}
-            MAIL_USERNAME=${{ env.MAIL_USERNAME }}
-            MAIL_PASSWORD=${{ env.MAIL_PASSWORD }}
-            DOMAIN_NAME=${{ env.DOMAIN_NAME }}
-      - name: Show docker compose logs
+      - name: Build and start services
+        run: |
+          docker compose -f docker-compose.yml up -d --build
+
+      - name: Wait for database
+        run: |
+          for i in {1..10}; do
+            if docker exec $(docker ps -qf "name=db") pg_isready -U $POSTGRES_USER; then
+              echo "Postgres is ready!"
+              break
+            fi
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
+
+      - name: Run tests
+        run: docker exec $(docker ps -qf "name=flask-app") pytest -v -s ./TodoAPP/tests
+
+      - name: Show logs if failed
+        if: failure()
         run: docker compose logs
 
-      - name: Execute tests Flask APP
-        run: |
-          docker exec flask-app pytest -v -s ./TodoAPP
+      - name: Stop containers
+        if: always()
+        run: docker compose down
