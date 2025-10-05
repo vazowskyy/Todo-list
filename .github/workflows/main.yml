@@ -3,7 +3,7 @@ name: CI Tests with Docker Compose
 on: [push, pull_request]
 
 jobs:
-  test:
+  Build:
     runs-on: ubuntu-latest
 
     env:
@@ -45,9 +45,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml up -d --build
 
-      - name: Run tests
-        run: docker exec $(docker ps -qf "name=flask-app") pytest -v -s ./TodoAPP/tests
-
       - name: Show logs if failed
         if: failure()
         run: docker compose logs
@@ -55,3 +52,11 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose down
+  Testing:
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run tests
+        run: docker exec $(docker ps -qf "name=flask-app") pytest -v -s ./TodoAPP/tests
