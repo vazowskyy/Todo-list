@@ -37,6 +37,3 @@ services:
       - 80:80
     volumes:
       - ../TodoAPP:/app/TodoAPP
-    # environment:
-    #   - DATABASE_URL=
-  
