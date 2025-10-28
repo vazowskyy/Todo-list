@@ -5,6 +5,10 @@ The project demonstrates a clean, modular architecture for managing tasks (CRUD 
 
 ---
 
+![alt text](https://github.com/vazowskyy/Todo-list/blob/FlaskPostgres/TodoAPP/website/static/images/carousel/todo_tasks.png?raw=true)
+
+---
+
 ## 🚀 Project Overview
 
 **Todo List** is a lightweight web application for managing personal tasks.  
