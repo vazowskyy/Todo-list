@@ -1,3 +1,5 @@
+### versions should be chosen by: 
+### dependency==ver1.0
 python-dotenv
 FLASK
 flask_mailman
@@ -12,3 +14,5 @@ psycopg2-binary
 Flask-Migrate 
 logging
 pytest 
+prometheus-client
+psutil
