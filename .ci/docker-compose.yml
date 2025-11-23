@@ -27,7 +27,7 @@ services:
       - db
     build:
       context: ..
-      dockerfile: ../Dockerfile
+      dockerfile: .ci/Dockerfile
     container_name: flask-app
     command: gunicorn TodoAPP.main:app --bind 0.0.0.0:80 --reload
     ports:
