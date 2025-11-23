@@ -18,12 +18,16 @@ services:
       start_period: 10s
 
   app:
+    env_file:
+      - .env.ci
     depends_on:
       db:
         condition: service_healthy
     links:
       - db
-    build: .
+    build:
+      context: ..
+      dockerfile: ../Dockerfile
     container_name: flask-app
     command: gunicorn TodoAPP.main:app --bind 0.0.0.0:80 --reload
     ports:
