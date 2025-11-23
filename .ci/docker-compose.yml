@@ -29,13 +29,13 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./TodoAPP:/app/TodoAPP
+      - ../TodoAPP:/app/TodoAPP
 
   prometheus:
     image: prom/prometheus
     restart: unless-stopped
     volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "../prometheus.yml:/etc/prometheus/prometheus.yml"
     ports:
       - '9090:9090'
   
