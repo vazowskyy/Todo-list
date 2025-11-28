@@ -1,0 +1,26 @@
+name: Deploy to VPS 
+
+on:
+  push:
+    branch [FlaskPostgres]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy project over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/todoapp
+            git fetch --all
+            git reset --hard origin/main
+            docker compose pull
+            docker compose build --no-cache
+            docker compose up -d
+            docker system prune -f
