@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }} 
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /var/www/todoapp
+            cd ./todoapp
             git fetch --all
             git reset --hard origin/main
             docker compose pull
