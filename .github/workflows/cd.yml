@@ -20,7 +20,8 @@ jobs:
           script: |
             cd ./todoapp
             git fetch --all
-            git reset --hard origin/main
+            git checkout FlaskPostgres
+            git reset --hard origin/FlaskPostgres
             docker compose version || echo "docker compose not installed"
             docker-compose pull
             docker-compose build --no-cache
