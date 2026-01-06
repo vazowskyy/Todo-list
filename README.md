@@ -1,7 +1,7 @@
 # 📝 Todo List
 
 A simple, **containerized Todo List application** built with **Flask**, **PostgreSQL**, and **Docker**.  
-The project demonstrates a clean, modular architecture for managing tasks (CRUD operations), continuous integration with **GitHub Actions**, and plans for observability using **Prometheus** and **Grafana**.
+The project demonstrates a clean, modular architecture for managing tasks (CRUD operations), continuous integration with **GitHub Actions**, and observability using **Prometheus** and **Grafana**.
 
 ---
 
@@ -19,11 +19,12 @@ The main goal of this project is to serve as a simple, production-ready example 
 ---
 
 ## 🧰 Tech Stack
-* Flask – Backend Framework
-* PostgreSQL – Database
-* Docker & Docker Compose – Containerization
-* GitHub Actions – CI/CD
-* pytest – Testing
+* Flask - Backend Framework
+* PostgreSQL - Database
+* Docker & Docker Compose - Containerization
+* GitHub Actions - CI/CD
+* pytest - Testing
+* Prometheus + Graphana app metrics monitoring
 
 ---
 
@@ -34,7 +35,7 @@ The main goal of this project is to serve as a simple, production-ready example 
 - ⚙️ Configurable environment via `.env` file  
 - 🐳 Ready-to-run **Dockerfile** and `docker-compose.yml`  
 - 🤖 Automated tests executed via **GitHub Actions**  
-- 📊 *In progress:* Monitoring and metrics with **Prometheus** and **Grafana**
+- 📊 Monitoring and metrics with **Prometheus** and **Grafana**
 
 ---
 
