@@ -43,10 +43,11 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     restart: unless-stopped
     networks:
-      - todoapp-network
+    - todoapp-network
 
   prometheus:
     image: prom/prometheus:latest

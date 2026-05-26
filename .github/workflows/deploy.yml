@@ -123,7 +123,7 @@ jobs:
             echo "Waiting for Docker..."
 
             for i in {1..30}; do
-              if docker info >/dev/null 2>&1; then
+              if sudo docker info >/dev/null 2>&1; then
                 echo "Docker is ready"
                 exit 0
               fi
@@ -144,27 +144,35 @@ jobs:
             cd /home/ubuntu/app
 
             # Stop and remove old containers
-            docker compose down || true
+            sudodocker compose down || true
 
             # Validate docker-compose.yml
-            docker compose config > /dev/null || exit 1
+            sudo docker compose config > /dev/null || exit 1
 
             # Build and start services
-            docker compose up -d --build
+            sudo docker compose up -d --build
 
             # Wait for app to be ready
             sleep 15
-            docker compose ps
+            sudo docker compose ps
 
       - name: Health check
         run: |
-          for i in {1..10}; do
-            if curl -k -s https://${{ env.EC2_HOST }} > /dev/null 2>&1 || curl -s http://${{ env.EC2_HOST }}:5000 > /dev/null 2>&1; then
-              echo "Application is healthy"
+          for i in {1..15}; do
+            echo "Healthcheck attempt $i..."
+
+            if curl -k --fail --connect-timeout 5 -s https://${{ env.EC2_HOST }}; then
+              echo "HTTPS is healthy"
               exit 0
             fi
-            echo "Waiting for application... ($i/10)"
-            sleep 6
+
+            if curl --fail --connect-timeout 5 -s http://${{ env.EC2_HOST }}:5000; then
+              echo "Flask app is healthy"
+              exit 0
+            fi
+
+            sleep 10
           done
-          echo "Warning: Application health check failed"
-          exit 0
+
+          echo "Application health check failed"
+          exit 1
