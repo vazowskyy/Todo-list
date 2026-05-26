@@ -1,56 +1,84 @@
-services:
-  db:
-    image: postgres:16
-    restart: always 
-    environment:
-        - POSTGRES_DB=${POSTGRES_DB}
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - '5432:5432'
-    volumes: 
-      - ./postgres/data:/var/lib/postgresql/data
-    healthcheck:      
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -t 1"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
+version: '3.8'
 
+services:
   app:
-    depends_on:
-      db:
-        condition: service_healthy
-    links:
-      - db
-    build: .
-    container_name: flask-app
-    command: gunicorn TodoAPP.main:app --bind 0.0.0.0:80 --reload
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 80:80
+      - "5000:5000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      FLASK_ENV: production
+    restart: unless-stopped
+    networks:
+      - todoapp-network
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./TodoAPP:/app/TodoAPP
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - todoapp-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - todoapp-network
 
   prometheus:
-    image: prom/prometheus
-    restart: unless-stopped
-    volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    image: prom/prometheus:latest
     ports:
-      - '9090:9090'
-  
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+    networks:
+      - todoapp-network
+
   grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
+    image: grafana/grafana:latest
     ports:
-      - '3000:3000'
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-admin}
     volumes:
-      - grafana-storage:/var/lib/grafana
-    
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - todoapp-network
+
 volumes:
- grafana-storage: {}
+  pgdata:
+  prometheus_data:
+  grafana_data:
 
 networks:
-  localprom:
+  todoapp-network:
     driver: bridge

@@ -30,9 +30,22 @@ postgres/data/
 TodoAPP/postgres/data
 docker-compose.override.yml
 
+# ─── Terraform ──────────────────────────────────────────
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/terraform.tfstate
+infra/terraform.tfstate.*
+infra/tfplan
+infra/*.backup
+
+# ─── SSL Certificates ───────────────────────────────────
+certs/
+*.pem
+
 # ─── System Files ───────────────────────────────────────
 .DS_Store
 Thumbs.db
 
 # ─── Pytest ───────────────────────────────────────
 .pytest_cache
+

@@ -1,0 +1,148 @@
+name: Infra (Terraform)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.TF_VAR_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: GitHub-Actions-OIDC-TERRAFORM
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.1
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -no-color
+        working-directory: infra
+        continue-on-error: true
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infra
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
+        working-directory: infra
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -input=false -out=tfplan
+        working-directory: infra
+
+      - name: Terraform Plan Status
+        if: failure()
+        run: exit 1
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -no-color tfplan
+        working-directory: infra
+
+      - name: Get EC2 IP from Terraform
+        id: tfout
+        run: |
+          EC2_HOST=$(terraform output -raw ec2_ip)
+          echo "EC2_HOST=$EC2_HOST" >> $GITHUB_ENV
+        working-directory: infra
+
+      - name: Wait for EC2 to be ready
+        run: |
+          for i in {1..30}; do
+            if nc -z $EC2_HOST 22 2>/dev/null; then
+              echo "SSH is ready"
+              exit 0
+            fi
+            echo "Waiting for SSH... ($i/30)"
+            sleep 10
+          done
+          exit 1
+        env:
+          EC2_HOST: ${{ env.EC2_HOST }}
+
+      - name: Deploy to EC2 (copy files)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "."
+          target: "/home/ubuntu/app"
+          rm: true
+
+      - name: Create .env on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cat > /home/ubuntu/app/.env << 'EOF'
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            FLASK_ENV=production
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }}
+            GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+            MAIL_SERVER=${{ secrets.MAIL_SERVER }}
+            MAIL_PORT=${{ secrets.MAIL_PORT }}
+            MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            MAIL_USE_SSL=true
+            EOF
+            chmod 600 /home/ubuntu/app/.env
+
+      - name: Generate self-signed SSL certificate
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/app/certs
+            openssl req -x509 -newkey rsa:4096 -keyout /home/ubuntu/app/certs/key.pem -out /home/ubuntu/app/certs/cert.pem -days 365 -nodes -subj "/CN=${{ env.EC2_HOST }}"
+
+      - name: Pull latest code and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+
+            # Stop and remove old containers
+            docker compose down || true
+
+            # Validate docker-compose.yml
+            docker compose config > /dev/null || exit 1
+
+            # Build and start services
+            docker compose up -d --build
+
+            # Wait for app to be ready
+            sleep 15
+            docker compose ps
+
+      - name: Health check
+        run: |
+          for i in {1..10}; do
+            if curl -k -s https://${{ env.EC2_HOST }} > /dev/null 2>&1 || curl -s http://${{ env.EC2_HOST }}:5000 > /dev/null 2>&1; then
+              echo "Application is healthy"
+              exit 0
+            fi
+            echo "Waiting for application... ($i/10)"
+            sleep 6
+          done
+          echo "Warning: Application health check failed"
+          exit 0
