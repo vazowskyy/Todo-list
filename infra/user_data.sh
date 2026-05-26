@@ -1,17 +1,29 @@
 #!/bin/bash -xe
 
-apt update -y
+apt-get update -y
+apt-get install -y ca-certificates curl gnupg lsb-release
 
-apt install -y \
-  docker.io \
-  docker-compose-plugin \
-  git
+# Docker GPG key
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Docker repo
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
+  > /etc/apt/sources.list.d/docker.list
+
+apt-get update -y
+
+# Docker + compose plugin
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 systemctl enable docker
 systemctl start docker
-systemctl restart docker
 
 usermod -aG docker ubuntu
 
+# sanity check
 docker --version
 docker compose version
