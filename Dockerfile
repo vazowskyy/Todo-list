@@ -6,11 +6,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY TodoAPP/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY TodoAPP/ .
 
 EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "TodoAPP.main:app", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "60"]
+ENTRYPOINT ["gunicorn", "main:app", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "60"]

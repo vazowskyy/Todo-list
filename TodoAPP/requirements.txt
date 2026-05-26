@@ -12,7 +12,6 @@ itsdangerous
 gunicorn
 psycopg2-binary
 Flask-Migrate 
-logging
 pytest 
 prometheus-client
 psutil
