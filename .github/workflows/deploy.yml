@@ -113,6 +113,27 @@ jobs:
             mkdir -p /home/ubuntu/app/certs
             openssl req -x509 -newkey rsa:4096 -keyout /home/ubuntu/app/certs/key.pem -out /home/ubuntu/app/certs/cert.pem -days 365 -nodes -subj "/CN=${{ env.EC2_HOST }}"
 
+      - name: Wait for Docker
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Waiting for Docker..."
+
+            for i in {1..30}; do
+              if docker info >/dev/null 2>&1; then
+                echo "Docker is ready"
+                exit 0
+              fi
+              echo "Docker not ready yet... ($i)"
+              sleep 2
+            done
+
+            echo "Docker failed to start"
+            exit 1
+
       - name: Pull latest code and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
