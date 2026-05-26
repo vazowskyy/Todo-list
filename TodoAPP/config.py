@@ -17,7 +17,6 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.getenv('SECRET_KEY', default='BAD_SECRET_KEY')
-    print(os.getenv('DATABASE_URL'))
     if os.getenv('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     else:

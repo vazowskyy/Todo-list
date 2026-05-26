@@ -82,3 +82,8 @@ def register_blueprint(app):
 
     from .metrics import metrics_bp
     app.register_blueprint(metrics_bp, url_prefix='/metrics')
+
+    # Health check endpoint
+    @app.route('/health')
+    def health():
+        return {'status': 'healthy'}, 200
