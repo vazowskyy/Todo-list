@@ -1,29 +1,29 @@
-name: Deploy to VPS 
+# name: Deploy to VPS
 
-on:
-  push:
-    branches: 
-      - FlaskPostgres
+# on:
+#   push:
+#     branches:
+#       - FlaskPostgres
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Deploy project over SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          port: ${{ secrets.SSH_PORT }} 
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd ./todoapp
-            git fetch --all
-            git checkout FlaskPostgres
-            git reset --hard origin/FlaskPostgres
-            docker compose version || echo "docker compose not installed"
-            docker-compose pull
-            docker-compose build --no-cache
-            docker-compose up -d
-            docker system prune -f
+#     steps:
+#       - name: Deploy project over SSH
+#         uses: appleboy/ssh-action@v1
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USERNAME }}
+#           port: ${{ secrets.SSH_PORT }}
+#           password: ${{ secrets.SSH_PASSWORD }}
+#           script: |
+#             cd ./todoapp
+#             git fetch --all
+#             git checkout FlaskPostgres
+#             git reset --hard origin/FlaskPostgres
+#             docker compose version || echo "docker compose not installed"
+#             docker-compose pull
+#             docker-compose build --no-cache
+#             docker-compose up -d
+#             docker system prune -f
